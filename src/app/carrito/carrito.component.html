@@ -1,0 +1,8 @@
+<p>carrito works!</p>
+
+<div *ngIf="loading">Cargando...</div>
+<div *ngIf="!loading">
+  <h2>Datos carritos:</h2>
+  <pre>{{ carritos | json }}</pre>
+ 
+</div>
