@@ -1,6 +1,6 @@
 <div class="container mt-4">
   <h2 class="mb-4 text-center">Productos</h2>
-  
+
   <div class="table-responsive">
     <table class="table table-striped table-hover">
       <thead class="table-dark">
@@ -8,17 +8,38 @@
           <th>ID</th>
           <th>Nombre</th>
           <th>Precio</th>
-          <th>Categoría</th>
+          <th>Categoría ID</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let producto of productos">
           <td>{{ producto.id }}</td>
           <td>{{ producto.nombre }}</td>
-          <td>${{ producto.precio }}</td>
+          <td>{{ producto.precio }} euros</td>
           <td>{{ producto.categoria }}</td>
         </tr>
       </tbody>
     </table>
   </div>
+</div>
+
+<!-- Formulario para añadir productos -->
+<div class="container mt-5">
+  <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+    <label for="nombre">Nombre:</label>
+    <input id="nombre" formControlName="nombre" type="text" />
+
+    <label for="precio">Precio:</label>
+    <input id="precio" formControlName="precio" type="number" />
+
+    <label for="categoriaId">Categoría:</label>
+    <select id="categoriaId" formControlName="categoriaId">
+      <option value="">--Selecciona una categoría--</option>
+      <option *ngFor="let cat of categorias" [value]="cat.id">
+        {{ cat.nombre }}
+      </option>
+    </select>
+
+    <button type="submit">Añadir Producto</button>
+  </form>
 </div>

@@ -12,6 +12,8 @@ import { FooterComponent } from './footer/footer.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { ProductosComponent } from './productos/productos.component';
 import { CarritoComponent } from './carrito/carrito.component'; 
+import { ReactiveFormsModule } from '@angular/forms'; // Importar el módulo
+import { CategoriasService } from './categorias.service';
 
 @NgModule({
   declarations: [
@@ -25,9 +27,10 @@ import { CarritoComponent } from './carrito/carrito.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   ],
-  providers: [ProductosService, CarritoService, ClientesService],
+  providers: [ProductosService, CarritoService, ClientesService, CategoriasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

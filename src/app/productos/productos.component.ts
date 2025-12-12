@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { ProductosService } from '../productos.service';
+import { CategoriasService } from '../categorias.service';
 
 @Component({
   selector: 'app-productos',
@@ -7,33 +9,65 @@ import { ProductosService } from '../productos.service';
   styleUrls: ['./productos.component.scss']
 })
 export class ProductosComponent {
-  title = 'AngularMVVM';
-  usuarios: any[] = [];
+
+  productos: any[] = [];
+  categorias: any[] = [];
   error: string | null = null;
-  data: any;  // Variable para almacenar los datos
-  productos: any;
-  loading: boolean = true;  // Indicador de carga
+  loading: boolean = true;
 
-  constructor(private productoService: ProductosService) { }
+  myForm: FormGroup;
 
-
-ngOnInit() {
-
-  console.log("ngOnInit called");
-    this.getProductos();  // Cargar los datos cuando el componente se inicializa
+  constructor(private productoService: ProductosService, private categoriaService: CategoriasService) {
+    this.myForm = new FormGroup({
+      nombre: new FormControl(''),
+      precio: new FormControl(''),
+      categoriaId: new FormControl('')
+    });
   }
-  
-getProductos(): void {
-  this.productoService.getData('usuarios').subscribe({
+
+  ngOnInit() {
+    this.getProductos();
+    this.getCategorias();
+  }
+
+  getProductos(): void {
+    this.productoService.getData().subscribe({
       next: (data) => {
-        this.usuarios = data;  // Asignar los datos de productos
-        this.productos = data;  // Asignar la respuesta a la variable 'data'
-        this.loading = false;   // Detener el indicador de carga
+        this.productos = data;
+        this.loading = false;
       },
       error: (err) => {
-        this.error = 'Error al cargar productos';  // Manejar errores
+        this.error = 'Error al cargar productos';
         console.error(err);
       }
     });
+  }
+
+  getCategorias(): void {
+    this.categoriaService.getData().subscribe({
+      next: (data) => {
+        this.categorias = data;  // Guardamos las categorías
+        console.log("Categorías:", this.categorias);
+      },
+      error: (err) => {
+        this.error = 'Error al cargar categorías';
+        console.error(err);
+      }
+    });
+  }
+
+  onSubmit() {
+    if (confirm("¿Estás seguro de que deseas dar de alta?")) {
+      this.productoService.postData(this.myForm.value).subscribe({
+        next: (nuevoProducto) => {
+          this.productos.push(nuevoProducto);
+          this.myForm.reset();
+        },
+        error: (err) => {
+          this.error = 'Error al agregar producto';
+          console.error(err);
+        }
+      });
+    }
   }
 }
