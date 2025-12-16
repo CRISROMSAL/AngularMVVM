@@ -1,38 +1,41 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
   private apiUrl = 'http://localhost:3000/usuario';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-  // Método para iniciar sesión
-  login(credentials: { email: string; password: string }) {
-    return this.http.post<any>(this.apiUrl, credentials)
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { email, password })
       .pipe(
-        tap(res => {
-          // Guardamos el token JWT en localStorage
-          localStorage.setItem('token', res.token);
+        tap(response => {
+          localStorage.setItem('token', response.token);
         })
       );
   }
 
-  // Cerrar sesión
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
+    this.router.navigate(['/admin/login']);
   }
 
-  // Comprueba si hay token
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
 
-  // Devuelve el token
   getToken(): string | null {
     return localStorage.getItem('token');
   }
+
+  
 }
